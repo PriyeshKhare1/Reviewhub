@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Environment files (IMPORTANT: Keep credentials secure!)
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Build outputs
+dist/
+build/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+
+# OS files
+Thumbs.db
+
+# Uploads (if stored locally)
+uploads/
