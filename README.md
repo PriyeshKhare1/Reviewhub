@@ -388,4 +388,4 @@ For issues or questions, create a GitHub issue.
 
 ---
 
-**Built with 💙 by [Your Name]**
+**Built with 💙 by Priyesh Khare**
