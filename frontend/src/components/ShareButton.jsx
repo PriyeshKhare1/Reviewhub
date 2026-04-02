@@ -5,7 +5,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { Button } from "./ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function ShareButton({ url, title, description }) {
+export default function ShareButton({ url, title }) {
   const [showModal, setShowModal] = useState(false);
   const [copied, setCopied] = useState(false);
 

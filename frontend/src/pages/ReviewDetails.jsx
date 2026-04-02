@@ -27,7 +27,7 @@ export default function ReviewDetails() {
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [showImageModal, setShowImageModal] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, _setSelectedImage] = useState(null);
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportReason, setReportReason] = useState("");
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -50,7 +50,6 @@ export default function ReviewDetails() {
 
         // Check bookmark status
         if (user) {
-          const userId = user.id || user._id;
           setIsBookmarked(user.savedReviews?.includes(id) || false);
         }
 

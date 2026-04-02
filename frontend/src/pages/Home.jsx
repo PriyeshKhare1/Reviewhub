@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from "../api/axios";
 import ReviewCard from "../components/ReviewCard";
@@ -82,8 +82,10 @@ export default function Home() {
     },
   ];
 
+  const categoryCount = categoryData.length;
+
   // Fetch Reviews
-  const fetchReviews = async () => {
+  const fetchReviews = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -94,7 +96,7 @@ export default function Home() {
         const data = res.data;
         setReviews(data.reviews || []);
         setTotalPages(data.totalPages || 1);
-        setStats({ totalReviews: data.total || 0, avgRating: "—", categories: categoryData.length });
+        setStats({ totalReviews: data.total || 0, avgRating: "—", categories: categoryCount });
         return;
       }
 
@@ -143,10 +145,10 @@ export default function Home() {
         setStats({
           totalReviews: data.total || data.reviews.length,
           avgRating: avgRating,
-          categories: categoryData.length,
+          categories: categoryCount,
         });
       } else {
-        setStats({ totalReviews: 0, avgRating: "0", categories: categoryData.length });
+        setStats({ totalReviews: 0, avgRating: "0", categories: categoryCount });
       }
     } catch (err) {
       console.error("Fetch error:", err);
@@ -155,12 +157,12 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [advancedFilters, categoryCount, feedTab, page, ratingFilter, searchQuery, selectedCategory, selectedTags, sortBy]);
 
   useEffect(() => {
     const delay = setTimeout(fetchReviews, 400);
     return () => clearTimeout(delay);
-  }, [searchQuery, selectedCategory, ratingFilter, sortBy, selectedTags, advancedFilters, page, feedTab]);
+  }, [fetchReviews]);
 
   // Handle advanced filters apply
   const handleApplyAdvancedFilters = (filters) => {

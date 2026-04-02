@@ -58,6 +58,11 @@ export const verifyProof = async (req, res) => {
       return res.status(400).json({ message: "No proof attached" });
     }
 
+    // Prevent double-awarding coins if admin verifies the same proof twice.
+    if (review.isVerifiedProof) {
+      return res.json({ message: "Proof already verified", review });
+    }
+
     review.isVerifiedProof = true;
     await review.save();
 

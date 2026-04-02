@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
 import { MessageSquare, ChevronDown } from "lucide-react";
 import CommentForm from "./CommentForm";
@@ -15,7 +15,7 @@ export default function CommentSection({ reviewId }) {
   const [hasMore, setHasMore] = useState(false);
   const [totalComments, setTotalComments] = useState(0);
 
-  const fetchComments = async (pageNum = 1) => {
+  const fetchComments = useCallback(async (pageNum = 1) => {
     try {
       setLoading(true);
       const res = await api.get(`/comments/review/${reviewId}?page=${pageNum}&limit=10`);
@@ -33,11 +33,11 @@ export default function CommentSection({ reviewId }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [reviewId]);
 
   useEffect(() => {
     fetchComments();
-  }, [reviewId]);
+  }, [fetchComments]);
 
   const handleAddComment = async (content) => {
     try {

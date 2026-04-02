@@ -6,11 +6,13 @@ import { usePageTitle } from "../hooks/usePageTitle";
 export default function VerifyEmail() {
   const [params] = useSearchParams();
   const token = params.get("token");
-  const [msg, setMsg] = useState("Verifying your email...");
-  const [status, setStatus] = useState("loading"); // loading, success, error
+  // Initialize based on whether the token exists to avoid setState in the effect.
+  const [msg, setMsg] = useState(token ? "Verifying your email..." : "Invalid verification link");
+  const [status, setStatus] = useState(token ? "loading" : "error"); // loading, success, error
   usePageTitle("Verify Email", "Verify your ReviewHub email address.");
 
   useEffect(() => {
+    if (!token) return;
     const verifyEmail = async () => {
       try {
         const res = await api.post(`/auth/verify-email?token=${token}`);
@@ -23,12 +25,7 @@ export default function VerifyEmail() {
       }
     };
 
-    if (token) {
-      verifyEmail();
-    } else {
-      setMsg("Invalid verification link");
-      setStatus("error");
-    }
+    verifyEmail();
   }, [token]);
 
   return (

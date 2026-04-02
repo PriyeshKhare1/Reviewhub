@@ -23,7 +23,16 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // Keep the repo strict, but avoid noise from common patterns in this codebase.
+      'no-unused-vars': [
+        'error',
+        {
+          // Ignore "component-like" variables (start with capital) and the `motion` symbol.
+          varsIgnorePattern: '^(?:[A-Z_]|motion)',
+          argsIgnorePattern: '^[A-Z_]',
+          caughtErrors: 'none',
+        },
+      ],
     },
   },
 ])

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import api from "../api/axios";
 
@@ -5,7 +6,10 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return !!localStorage.getItem("token");
+  });
   const [coins, setCoins] = useState(0);
 
   const refreshCoins = useCallback(() => {
@@ -19,7 +23,6 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      setLoading(false);
       return;
     }
 
@@ -41,8 +44,6 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (user) {
       refreshCoins();
-    } else {
-      setCoins(0);
     }
   }, [user, refreshCoins]);
 
@@ -54,6 +55,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
+    setCoins(0);
   };
 
   return (

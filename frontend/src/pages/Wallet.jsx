@@ -46,7 +46,7 @@ export default function WalletPage() {
   useEffect(() => {
     if (!user) { navigate("/login"); return; }
     fetchWallet();
-  }, [user]);
+  }, [user, navigate]);
 
   const fetchWallet = async () => {
     try {

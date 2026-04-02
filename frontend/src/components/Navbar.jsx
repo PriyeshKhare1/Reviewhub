@@ -22,6 +22,39 @@ import {
   FolderOpen
 } from "lucide-react";
 
+function NavLink({ to, children, icon: Icon, isActive }) {
+  return (
+    <Link
+      to={to}
+      className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+        isActive(to)
+          ? "bg-blue-500/10 text-blue-600 dark:text-blue-400"
+          : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
+      }`}
+    >
+      {Icon && <Icon className="w-4 h-4" />}
+      {children}
+    </Link>
+  );
+}
+
+function MobileNavLink({ to, children, icon: Icon, onClick, isActive }) {
+  return (
+    <Link
+      to={to}
+      onClick={onClick}
+      className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
+        isActive(to)
+          ? "bg-blue-500/10 text-blue-600 dark:text-blue-400"
+          : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+      }`}
+    >
+      {Icon && <Icon className="w-5 h-5" />}
+      {children}
+    </Link>
+  );
+}
+
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -50,8 +83,11 @@ export default function Navbar() {
 
   // Close menus on route change
   useEffect(() => {
-    setUserMenuOpen(false);
-    setMobileOpen(false);
+    const t = setTimeout(() => {
+      setUserMenuOpen(false);
+      setMobileOpen(false);
+    }, 0);
+    return () => clearTimeout(t);
   }, [location.pathname]);
 
   // Close on Escape
@@ -67,35 +103,6 @@ export default function Navbar() {
   }, []);
 
   const isActive = (path) => location.pathname === path;
-
-  const NavLink = ({ to, children, icon: Icon }) => (
-    <Link
-      to={to}
-      className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-        isActive(to)
-          ? "bg-blue-500/10 text-blue-600 dark:text-blue-400"
-          : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
-      }`}
-    >
-      {Icon && <Icon className="w-4 h-4" />}
-      {children}
-    </Link>
-  );
-
-  const MobileNavLink = ({ to, children, icon: Icon, onClick }) => (
-    <Link
-      to={to}
-      onClick={onClick}
-      className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
-        isActive(to)
-          ? "bg-blue-500/10 text-blue-600 dark:text-blue-400"
-          : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-      }`}
-    >
-      {Icon && <Icon className="w-5 h-5" />}
-      {children}
-    </Link>
-  );
 
   return (
     <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
@@ -114,13 +121,13 @@ export default function Navbar() {
 
           {/* CENTER NAV (Desktop) */}
           <nav className="hidden lg:flex items-center gap-1 bg-slate-100/50 dark:bg-slate-800/50 rounded-xl p-1">
-            <NavLink to="/" icon={Home}>Home</NavLink>
-            <NavLink to="/leaderboard" icon={Trophy}>Leaderboard</NavLink>
-            <NavLink to="/categories" icon={FolderOpen}>Categories</NavLink>
-            {user && <NavLink to="/create-review" icon={PenSquare}>New Review</NavLink>}
-            {user && <NavLink to="/drafts" icon={FileEdit}>Drafts</NavLink>}
-            {user && <NavLink to="/analytics" icon={BarChart3}>Analytics</NavLink>}
-            {user && user.role === "admin" && <NavLink to="/admin" icon={Shield}>Admin</NavLink>}
+            <NavLink to="/" icon={Home} isActive={isActive}>Home</NavLink>
+            <NavLink to="/leaderboard" icon={Trophy} isActive={isActive}>Leaderboard</NavLink>
+            <NavLink to="/categories" icon={FolderOpen} isActive={isActive}>Categories</NavLink>
+            {user && <NavLink to="/create-review" icon={PenSquare} isActive={isActive}>New Review</NavLink>}
+            {user && <NavLink to="/drafts" icon={FileEdit} isActive={isActive}>Drafts</NavLink>}
+            {user && <NavLink to="/analytics" icon={BarChart3} isActive={isActive}>Analytics</NavLink>}
+            {user && user.role === "admin" && <NavLink to="/admin" icon={Shield} isActive={isActive}>Admin</NavLink>}
           </nav>
 
           {/* RIGHT ACTIONS */}
@@ -267,34 +274,34 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="lg:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 animate-slide-down">
           <div className="px-4 py-4 space-y-1">
-            <MobileNavLink to="/" icon={Home} onClick={() => setMobileOpen(false)}>
+            <MobileNavLink to="/" icon={Home} onClick={() => setMobileOpen(false)} isActive={isActive}>
               Home
             </MobileNavLink>
-            <MobileNavLink to="/leaderboard" icon={Trophy} onClick={() => setMobileOpen(false)}>
+            <MobileNavLink to="/leaderboard" icon={Trophy} onClick={() => setMobileOpen(false)} isActive={isActive}>
               Leaderboard
             </MobileNavLink>
-            <MobileNavLink to="/categories" icon={FolderOpen} onClick={() => setMobileOpen(false)}>
+            <MobileNavLink to="/categories" icon={FolderOpen} onClick={() => setMobileOpen(false)} isActive={isActive}>
               Categories
             </MobileNavLink>
             {user && (
               <>
-                <MobileNavLink to="/create-review" icon={PenSquare} onClick={() => setMobileOpen(false)}>
+                <MobileNavLink to="/create-review" icon={PenSquare} onClick={() => setMobileOpen(false)} isActive={isActive}>
                   New Review
                 </MobileNavLink>
-                <MobileNavLink to="/my-reviews" icon={FileText} onClick={() => setMobileOpen(false)}>
+                <MobileNavLink to="/my-reviews" icon={FileText} onClick={() => setMobileOpen(false)} isActive={isActive}>
                   My Reviews
                 </MobileNavLink>
-                <MobileNavLink to="/drafts" icon={FileEdit} onClick={() => setMobileOpen(false)}>
+                <MobileNavLink to="/drafts" icon={FileEdit} onClick={() => setMobileOpen(false)} isActive={isActive}>
                   Drafts
                 </MobileNavLink>
-                <MobileNavLink to="/analytics" icon={BarChart3} onClick={() => setMobileOpen(false)}>
+                <MobileNavLink to="/analytics" icon={BarChart3} onClick={() => setMobileOpen(false)} isActive={isActive}>
                   Analytics
                 </MobileNavLink>
-                <MobileNavLink to="/saved-reviews" icon={Bookmark} onClick={() => setMobileOpen(false)}>
+                <MobileNavLink to="/saved-reviews" icon={Bookmark} onClick={() => setMobileOpen(false)} isActive={isActive}>
                   Saved Reviews
                 </MobileNavLink>
                 {user.role === "admin" && (
-                  <MobileNavLink to="/admin" icon={Shield} onClick={() => setMobileOpen(false)}>
+                  <MobileNavLink to="/admin" icon={Shield} onClick={() => setMobileOpen(false)} isActive={isActive}>
                     Admin Dashboard
                   </MobileNavLink>
                 )}
